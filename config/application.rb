@@ -14,5 +14,13 @@ module Ethnographer
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
+
+    config.generators do |g|
+      g.factory_bot false
+    end
+
+    config.generators do |g|
+      g.factory_bot dir: 'factories'
+    end
   end
 end
