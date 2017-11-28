@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Cultures</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Species</th>
+      <th>Collected</th>
+      <th>Comments</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @cultures.each do |culture| %>
+      <tr>
+        <td.name><%= culture.name %></td>
+        <td.species><%= culture.species %></td>
+        <td><%= culture.collected %></td>
+        <td.comments><%= culture.comments %></td>
+        <td><%= link_to 'Show', culture %></td>
+        <td><%= link_to 'Edit', edit_culture_path(culture) %></td>
+        <td><%= link_to 'Destroy', culture, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Culture', new_culture_path %>
