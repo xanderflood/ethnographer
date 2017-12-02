@@ -1,24 +1,5 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A simple web application for tracking and labelling in vitro cultures. The use case in mind is a small mushroom farm or spawn laboratory.
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Ethnographer will help you track cell lines and generations, so that you can easily trace every unit of spawn produced back to its wild-harvested or lab-purchased origin, and identify when lines may be reaching senescence.
