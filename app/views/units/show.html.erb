@@ -1,0 +1,49 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Uuid:</strong>
+  <%= @unit.uuid %>
+</p>
+
+<p>
+  <strong>Weight:</strong>
+  <%= @unit.weight %>
+</p>
+
+<p>
+  <strong>Unit type:</strong>
+  <%= @unit.unit_type %>
+</p>
+
+<p>
+  <strong>Prepared:</strong>
+  <%= @unit.prepared %>
+</p>
+
+<p>
+  <strong>Innoculated:</strong>
+  <%= @unit.innoculated %>
+</p>
+
+<p>
+  <strong>Disposed:</strong>
+  <%= @unit.disposed %>
+</p>
+
+<p>
+  <strong>Culture:</strong>
+  <%= @unit.culture %>
+</p>
+
+<p>
+  <strong>Parent:</strong>
+  <%= @unit.parent %>
+</p>
+
+<p>
+  <strong>Comments:</strong>
+  <%= @unit.comments %>
+</p>
+
+<%= link_to 'Edit', edit_unit_path(@unit) %> |
+<%= link_to 'Back', units_path %>
