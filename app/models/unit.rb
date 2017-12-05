@@ -3,6 +3,7 @@ class Unit < ApplicationRecord
   belongs_to :unit_type
   belongs_to :culture
   belongs_to :parent, class_name: :Unit, required: false
+  has_many :children, class_name: :Unit, foreign_key: :parent_id
 
   validate :same_culture_as_parent
 
@@ -16,20 +17,9 @@ class Unit < ApplicationRecord
   def original?; self.parent.present?; end
 
   def generation
-    return 0 unless self.parent.present?
+    return 0 if self.original?
 
-    # load your ancestors in one query
-    # TODO: make this work
-    Unit.preload(Unit.last.parent_id).includes(parent: :parent)
-
-    cur = self.parent
-    i   = 0
-    until cur.nil?
-      cur = cur.parent
-      i  += 1
-    end
-
-    return i
+    Unit.ancestral_line_for(self).count
   end
 
   def innoc_date_str
@@ -64,5 +54,51 @@ class Unit < ApplicationRecord
       num = num / 26
     end
     s
+  end
+
+  ### class methods ###
+  # TODO: factor these tree queries into a concern, or even a gem
+  def self.descendents_tree_for(instance)
+    self.where("#{table_name}.id IN (#{descendants_sql_for(instance)})")
+        .order("#{table_name}.id")
+  end
+
+  def self.ancestral_line_for(instance)
+    self.where("#{table_name}.id IN (#{ancestors_sql_for(instance)})")
+        .order("#{table_name}.id")
+  end
+
+  def self.descendants_sql_for(instance)
+    # taken from https://hashrocket.com/blog/posts/recursive-sql-in-activerecord
+    <<-SQL
+    WITH RECURSIVE search_tree(id, path) AS (
+        SELECT id, ARRAY[id]
+        FROM #{table_name}
+        WHERE id = #{instance.id}
+      UNION ALL
+        SELECT #{table_name}.id, path || #{table_name}.id
+        FROM search_tree
+        JOIN #{table_name} ON #{table_name}.parent_id = search_tree.id
+        WHERE NOT #{table_name}.id = ANY(path)
+    )
+    SELECT id FROM search_tree ORDER BY path
+    SQL
+  end
+
+  def self.ancestors_sql_for(instance)
+    # adapted from https://hashrocket.com/blog/posts/recursive-sql-in-activerecord
+    <<-SQL
+    WITH RECURSIVE search_tree(id, pid) AS (
+        SELECT id, parent_id
+        FROM #{table_name}
+        WHERE id = #{instance.id}
+      UNION ALL
+        SELECT #{table_name}.id, #{table_name}.parent_id
+        FROM search_tree
+        JOIN #{table_name} ON #{table_name}.id = search_tree.pid
+        WHERE NOT #{table_name}.id = #{instance.id}
+    )
+    SELECT id FROM search_tree
+    SQL
   end
 end
