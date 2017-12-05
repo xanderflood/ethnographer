@@ -1,3 +1,4 @@
+
 <%= form_with(model: unit, local: true) do |form| %>
   <% if unit.errors.any? %>
     <div id="error_explanation">
@@ -10,11 +11,6 @@
       </ul>
     </div>
   <% end %>
-
-  <div class="field">
-    <%= form.label :uuid %>
-    <%= form.text_field :uuid, id: :unit_uuid %>
-  </div>
 
   <div class="field">
     <%= form.label :weight %>
