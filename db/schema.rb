@@ -36,9 +36,9 @@ ActiveRecord::Schema.define(version: 20171203014222) do
     t.string "uuid"
     t.float "weight"
     t.bigint "unit_type_id"
-    t.date "prepared"
-    t.date "innoculated"
-    t.date "disposed"
+    t.date "prepared", null: false
+    t.date "innoculated", null: false
+    t.date "disposed", null: false
     t.bigint "culture_id"
     t.bigint "parent_id"
     t.text "comments"

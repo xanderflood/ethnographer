@@ -7,7 +7,7 @@ class Unit < ApplicationRecord
 
   validate :same_culture_as_parent
 
-  before_save :set_uuid
+  after_initialize :set_uuid, if: :new_record?
 
   # if the hash contains an id, this will update
   # if it doesn't, a new one will be created, even
@@ -35,18 +35,25 @@ class Unit < ApplicationRecord
   end
 
   # TODO: put this in a concern?
-  def num_uuuid s; Unit.where("uuid LIKE ?", "#{s}%").count; end
+  # this is called _before_
+  def num_uuuid; Unit.where(parent: parent).count; end
   def set_uuid
-    self.uuid = if self.innoculated?
-      start = "#{self.innoc_date_str}-#{self.culture_id}-#{self.unit_type.name}"
-      "#{start}-#{to_alpha num_uuuid(start)}"
+    g = self.generation
+
+    start = if self.parent
+      self.parent.uuid
     else
-      "blank-#{self.id}"
+      "#{self.culture_id}-#{self.innoc_date_str}-#{self.unit_type.name}-"
     end
+
+    n = self.num_uuuid
+    c = to_alpha(n)
+
+    "#{start}#{c}"
   end
 
   # helpers
-  def to_alpha num
+  def self.to_alpha num
     s = ""
     a = ("a".."z").to_a
     while num > 0
