@@ -7,19 +7,24 @@ class Unit < ApplicationRecord
 
   validate :same_culture_as_parent
 
-  after_initialize :set_uuid, if: :new_record?
+  before_create :set_uuid
 
   # if the hash contains an id, this will update
   # if it doesn't, a new one will be created, even
   # if there's a match in name
   accepts_nested_attributes_for :unit_type
 
-  def original?; self.parent.present?; end
+  scope :initial, -> { where(parent: nil) }
+  def initial?; parent.nil?; end
 
   def generation
-    return 0 if self.original?
-
-    Unit.ancestral_line_for(self).count
+    if initial?
+      0
+    elsif persisted?
+      self.parent.generation + 1
+    else
+      Unit.ancestral_line_for(self).count
+    end
   end
 
   def innoc_date_str
@@ -28,7 +33,6 @@ class Unit < ApplicationRecord
   end
 
   private
-
   ### callbacks ###
   def same_culture_as_parent
     self.culture_id = self.parent.culture_id if self.parent.present?
@@ -65,6 +69,7 @@ class Unit < ApplicationRecord
 
   ### class methods ###
   # TODO: factor these tree queries into a concern, or even a gem
+  # these require the unit to be persisted
   def self.descendents_tree_for(instance)
     self.where("#{table_name}.id IN (#{descendants_sql_for(instance)})")
         .order("#{table_name}.id")
