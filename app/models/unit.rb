@@ -1,6 +1,6 @@
 class Unit < ApplicationRecord
   # TODO: selectors for these
-  belongs_to :unit_type
+  belongs_to :medium
   belongs_to :culture
   belongs_to :parent, class_name: :Unit, required: false
   has_many :children, class_name: :Unit, foreign_key: :parent_id
@@ -12,7 +12,7 @@ class Unit < ApplicationRecord
   # if the hash contains an id, this will update
   # if it doesn't, a new one will be created, even
   # if there's a match in name
-  accepts_nested_attributes_for :unit_type
+  accepts_nested_attributes_for :medium
 
   scope :initial, -> { where(parent: nil) }
   def initial?; parent.nil?; end
@@ -20,7 +20,7 @@ class Unit < ApplicationRecord
   def generation
     if initial?
       0
-    elsif persisted?
+    elsif !persisted?
       self.parent.generation + 1
     else
       Unit.ancestral_line_for(self).count
@@ -47,11 +47,11 @@ class Unit < ApplicationRecord
     start = if self.parent
       self.parent.uuid
     else
-      "#{self.culture_id}-#{self.innoc_date_str}-#{self.unit_type.name}-"
+      "#{self.culture_id}-#{self.innoc_date_str}-"
     end
 
-    n = self.num_uuuid
-    c = to_alpha(n)
+    n = num_uuuid
+    c = Unit.to_alpha(n)
 
     "#{start}#{c}"
   end
