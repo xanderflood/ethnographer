@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171203014222) do
+ActiveRecord::Schema.define(version: 20180119011030) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,10 +24,9 @@ ActiveRecord::Schema.define(version: 20171203014222) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "unit_types", force: :cascade do |t|
+  create_table "media", force: :cascade do |t|
     t.string "name"
-    t.string "substrate"
-    t.text "comments"
+    t.text "recipe"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -35,21 +34,20 @@ ActiveRecord::Schema.define(version: 20171203014222) do
   create_table "units", force: :cascade do |t|
     t.string "uuid"
     t.float "weight"
-    t.bigint "unit_type_id"
-    t.date "prepared", null: false
     t.date "innoculated", null: false
-    t.date "disposed", null: false
+    t.date "disposed"
     t.bigint "culture_id"
     t.bigint "parent_id"
     t.text "comments"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "medium_id"
     t.index ["culture_id"], name: "index_units_on_culture_id"
+    t.index ["medium_id"], name: "index_units_on_medium_id"
     t.index ["parent_id"], name: "index_units_on_parent_id"
-    t.index ["unit_type_id"], name: "index_units_on_unit_type_id"
   end
 
   add_foreign_key "units", "cultures"
-  add_foreign_key "units", "unit_types"
+  add_foreign_key "units", "media"
   add_foreign_key "units", "units", column: "parent_id"
 end
