@@ -19,3 +19,6 @@
 .byebug_history
 
 .rake_tasks~
+
+.ruby-version
+.ruby-gemset
