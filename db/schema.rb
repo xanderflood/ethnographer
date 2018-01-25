@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180119011030) do
+ActiveRecord::Schema.define(version: 20180123153902) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,20 @@ ActiveRecord::Schema.define(version: 20180119011030) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "transfers", force: :cascade do |t|
+    t.datetime "datetime"
+    t.integer "kind", default: 0, null: false
+    t.text "notes"
+    t.bigint "parent_id"
+    t.bigint "medium_id"
+    t.bigint "culture_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["culture_id"], name: "index_transfers_on_culture_id"
+    t.index ["medium_id"], name: "index_transfers_on_medium_id"
+    t.index ["parent_id"], name: "index_transfers_on_parent_id"
+  end
+
   create_table "units", force: :cascade do |t|
     t.string "uuid"
     t.float "weight"
@@ -42,11 +56,15 @@ ActiveRecord::Schema.define(version: 20180119011030) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "medium_id"
+    t.bigint "transfer_id"
     t.index ["culture_id"], name: "index_units_on_culture_id"
     t.index ["medium_id"], name: "index_units_on_medium_id"
     t.index ["parent_id"], name: "index_units_on_parent_id"
   end
 
+  add_foreign_key "transfers", "cultures"
+  add_foreign_key "transfers", "media"
+  add_foreign_key "transfers", "units", column: "parent_id"
   add_foreign_key "units", "cultures"
   add_foreign_key "units", "media"
   add_foreign_key "units", "units", column: "parent_id"
