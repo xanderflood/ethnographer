@@ -5,7 +5,7 @@ class Culture < ApplicationRecord
 
   # callbacks
   def collected_date_cannot_be_in_the_future
-    errors.add(:collected, "cannot be in the future") if self.collected > Date.today
+    errors.add(:collected, "cannot be in the future") if self.collected && self.collected > Date.today
   end
 
   def initial_units
