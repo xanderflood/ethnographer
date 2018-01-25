@@ -23,7 +23,7 @@ RSpec.describe Unit, type: :model do
 
   describe "uuid" do
     it "should have the correct form of uuid" do
-      units = [FactoryBot.create(:unit)]
+      units = [FactoryBot.create(:tissue_unit)]
       cid   = units.first.culture_id.to_s
 
       for _ in 1..4 do
@@ -44,17 +44,29 @@ RSpec.describe Unit, type: :model do
       unit = FactoryBot.create(:unit, parent: units[3])
       expect(unit.uuid).to eq(units[3].uuid + "B")
     end
+
+    it "should properly increment for multiple tissue clones" do
+      culture = FactoryBot.create(:culture)
+      medium = FactoryBot.create(:medium)
+
+      alphas = ("A".."Z").to_a
+      for i in 1..4 do
+        unit = Unit.create(culture: culture, medium: medium)
+
+        expect(unit.uuid[-1]).to eq alphas[i-1]
+      end
+    end
   end
 
   describe "generation" do
     it "should return 0 for a Unit without a parent" do
-      u = FactoryBot.create(:unit, parent: nil)
+      u = FactoryBot.create(:tissue_unit, parent: nil)
 
       expect(u.generation).to eq 0
     end
 
     it "should always be 1 greater than the generation of its parent" do
-      u = FactoryBot.create(:unit)
+      u = FactoryBot.create(:tissue_unit)
       g = u.generation
 
       u2 = FactoryBot.create(:unit, parent: u)

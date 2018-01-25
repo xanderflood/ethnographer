@@ -25,7 +25,7 @@ module TreeIdentifiable
   end
 
   def next_chars
-    num = Unit.where(parent: self.parent).count
+    num = self.culture.units.where(parent: self.parent).count
     g = self.generation
 
     if g % 2 == 0

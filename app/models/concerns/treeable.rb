@@ -33,13 +33,13 @@ module Treeable
   class_methods do
     # declare attributes that should be inherited from the parent record
     def inherits *attributes
-      before_save :inherit_attributes
+      after_initialize :inherit_attributes, if: :new_record?
 
       define_method(:inherit_attributes) do
         return if self.initial?
 
         attributes.each do |attrib|
-          self.write_attribute(attrib, self.parent[attrib])
+          self.send(:"#{attrib}=", self.parent[attrib])
         end
       end
     end
