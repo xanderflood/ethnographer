@@ -12,6 +12,7 @@ class Transfer < ApplicationRecord
   # :isolate  renaming an isolate from a non-pure culture
 
   attr_accessor :count
+  attr_accessor :weight
 
   # can only be used to create, not update
   accepts_nested_attributes_for :medium
@@ -27,19 +28,19 @@ class Transfer < ApplicationRecord
 
   private
   def do_transfer
-    case type
-    when :transfer
-      raise StandardError.new("Not yet implemented.")
+    if self.transfer? || self.tissue?
+      paramses = Array.new(self.count,
+        { transfer:   self,
+          medium_id:  self.medium_id,
+          weight:     self.weight })
 
-      # TODO: create `count` many children of `parent`, using `medium`
-    when :tissue
-      raise StandardError.new("Not yet implemented.")
+      resource = if self.transfer?
+        self.parent.children
+      else
+        self.culture.units
+      end
 
-      # TODO: create `count` top-level units of `culture`, using `medium`
-    when :spores
-      raise StandardError.new("Not yet implemented.")
-    when :isolate
-      raise StandardError.new("Not yet implemented.")
+      res = resource.create(paramses)
     else
       raise StandardError.new("Invalid transfer kind.")
     end
