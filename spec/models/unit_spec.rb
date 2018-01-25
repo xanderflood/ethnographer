@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Unit, type: :model do
-  it "should reject a unit whose parent is from a different culture" do
+  it "should set culture to that of parent, even if another is specified" do
     u = Unit.create(
       innoculated: Date.today - 3.days,
       medium: FactoryBot.create(:medium),
@@ -9,7 +9,7 @@ RSpec.describe Unit, type: :model do
       parent: FactoryBot.create(:unit,
         culture: FactoryBot.create(:culture)))
 
-    expect(u.valid?).to eq false
+    expect(u.culture).to eq u.parent.culture
   end
 
   it "should accept a unit with a valid culture" do

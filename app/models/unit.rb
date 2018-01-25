@@ -5,13 +5,11 @@ class Unit < ApplicationRecord
   belongs_to :parent, class_name: :Unit, required: false
   has_many :children, class_name: :Unit, foreign_key: :parent_id
 
-  validate :same_culture_as_parent
-
   before_create :set_uuid
+  before_save   :set_culture
 
   # if the hash contains an id, this will update
-  # if it doesn't, a new one will be created, even
-  # if there's a match in name
+  # if it doesn't, a new one will be created
   accepts_nested_attributes_for :medium
 
   scope :initial, -> { where(parent: nil) }
@@ -34,13 +32,13 @@ class Unit < ApplicationRecord
 
   private
   ### callbacks ###
-  def same_culture_as_parent
+  def set_culture
     self.culture_id = self.parent.culture_id if self.parent.present?
   end
 
   # TODO: put this in a concern?
-  # this is called _before_
-  def num_uuuid; Unit.where(parent: parent).count; end
+  # this is called _before_ saving this unit
+  def num_uuuid; Unit.where(parent: self.parent).count; end
   def set_uuid
     g = self.generation
 
