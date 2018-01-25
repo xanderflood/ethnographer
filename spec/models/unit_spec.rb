@@ -22,7 +22,30 @@ RSpec.describe Unit, type: :model do
   end
 
   describe "uuid" do
-    it "should have the correct form of uuid"
+    it "should have the correct form of uuid" do
+      units = [FactoryBot.create(:unit)]
+      cid   = units.first.culture_id.to_s
+      date  = units.first.innoculated.strftime("%d.%m.%Y")
+
+      for _ in 1..4 do
+        units << FactoryBot.create(:unit, parent: units.last)
+      end
+
+      code = ""
+      units.each.with_index do |unit, i|
+        parts = unit.uuid.split("-")
+
+        expect(parts.count).to eq 3
+        expect(parts[0]).to eq cid
+        expect(parts[1]).to eq date
+
+        code += (i % 2 == 0) ? "A" : "0"
+        expect(parts[2]).to eq code
+      end
+
+      unit = FactoryBot.create(:unit, parent: units[3])
+      expect(unit.uuid).to eq(units[3].uuid + "B")
+    end
   end
 
   describe "generation" do

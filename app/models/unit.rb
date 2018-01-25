@@ -49,20 +49,21 @@ class Unit < ApplicationRecord
     end
 
     n = num_uuuid
-    c = Unit.to_alpha(n)
+    c = (g % 2 == 0) ? Unit.to_alpha(n) : n
 
-    "#{start}#{c}"
+    self.uuid = "#{start}#{c}"
   end
 
   # helpers
   def self.to_alpha num
-    s = ""
-    a = ("a".."z").to_a
-    while num > 0
-      s   = s + a[num % 26]
+    str = ""
+    chars = ("A".."Z").to_a
+    loop do
+      str = str + chars[(num % 26)]
       num = num / 26
+      break if num == 0
     end
-    s
+    str
   end
 
   ### class methods ###
