@@ -25,7 +25,6 @@ RSpec.describe Unit, type: :model do
     it "should have the correct form of uuid" do
       units = [FactoryBot.create(:unit)]
       cid   = units.first.culture_id.to_s
-      date  = units.first.innoculated.strftime("%d.%m.%Y")
 
       for _ in 1..4 do
         units << FactoryBot.create(:unit, parent: units.last)
@@ -35,12 +34,11 @@ RSpec.describe Unit, type: :model do
       units.each.with_index do |unit, i|
         parts = unit.uuid.split("-")
 
-        expect(parts.count).to eq 3
+        expect(parts.count).to eq 2
         expect(parts[0]).to eq cid
-        expect(parts[1]).to eq date
 
         code += (i % 2 == 0) ? "A" : "0"
-        expect(parts[2]).to eq code
+        expect(parts[1]).to eq code
       end
 
       unit = FactoryBot.create(:unit, parent: units[3])
