@@ -21,7 +21,7 @@ class Unit < ApplicationRecord
     elsif !persisted?
       self.parent.generation + 1
     else
-      Unit.ancestral_line_for(self).count
+      Unit.ancestral_line_for(self).count - 1
     end
   end
 
