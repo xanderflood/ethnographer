@@ -1,9 +1,11 @@
 class Transfer < ApplicationRecord
+  default_scope { order(datetime: :desc) }
+
   belongs_to :parent, class_name: :Unit, required: false
   belongs_to :culture, required: false
   belongs_to :medium
 
-  has_many :units
+  has_many :units, dependent: :destroy
 
   enum kind: { transfer: 0, tissue: 1, spores: 2, isolate: 3 }
   # :transfer moving mycelia from one Unit to another of the same culture
@@ -11,8 +13,12 @@ class Transfer < ApplicationRecord
   # :spores   plating spores to produce many new cultures
   # :isolate  renaming an isolate from a non-pure culture
 
-  attr_accessor :count
   attr_accessor :weight
+  attr_reader :count
+
+  def count= value
+    @count = value.to_i
+  end
 
   # can only be used to create, not update
   accepts_nested_attributes_for :medium
