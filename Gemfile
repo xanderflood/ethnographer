@@ -18,6 +18,7 @@ gem 'jbuilder', '~> 2.5' # https://github.com/rails/jbuilder
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.6'
+  gem 'rails-controller-testing'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'capybara', '~> 2.13'
   gem 'selenium-webdriver'

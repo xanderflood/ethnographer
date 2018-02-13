@@ -1,3 +1,5 @@
 Rails.application.routes.draw do
-  root to: 'cultures#index'
+  root to: 'transfers#index'
+
+  resources :transfers, only: [:new, :index, :create, :destroy]
 end
