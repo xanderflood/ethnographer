@@ -1,0 +1,31 @@
+<% selector_id ||= "\"transfer\"" %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <ul class="nav nav-pills nav-fill content-selector" data-selector-id=<%= selector_id %>>
+      <li class="nav-item active">
+        <a data-content-id="transfer" class="nav-link content-selector-toggle">Expanding culture</a>
+      </li>
+      <li class="nav-item">
+        <a data-content-id="tissue" class="nav-link content-selector-toggle">Cloning tissue</a>
+      </li>
+    </ul>
+  </div>
+
+  <%= form_for transfer do |f| %>
+    <div class="panel-body content-selector-viewport" data-selector-id=<%= selector_id %>>
+      <!-- the proper content-selector-block gets dropped here -->
+
+      <div style="display: none;" class="transfer-forms">
+        <div class="content-selector-block" data-content-id="transfer">
+          <%= render partial: "transfers/form/transfer", locals: { f: f } %>
+        </div>
+        <div class="content-selector-block" data-content-id="tissue">
+          <%= render partial: "transfers/form/tissue", locals: { f: f } %>
+        </div>
+      </div>
+    </div>
+
+    <%= f.submit "Create" %>
+  <% end %>
+</div>

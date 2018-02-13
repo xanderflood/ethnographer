@@ -1,0 +1,34 @@
+<h1>Your Transfers</h1>
+
+<br/>
+
+<% if @transfers.any? %>
+  <%= link_to "Start a new transfer.", [:new, :transfer] %>
+
+  <br/>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Kind</th>
+        <th>Culture</th>
+        <th>Parent</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @transfers.each do |transfer| %>
+        <tr>
+          <td><%= transfer.datetime %></td>
+          <td><%= transfer.kind.capitalize %></td>
+          <td><%= transfer.culture ? transfer.culture.name : transfer.parent.culture.name %></td>
+          <td><%= transfer.parent  ? transfer.parent.uuid  : "N/A" %></td>
+          <td><%= link_to "Delete", transfer, method: :delete, data: { confirm: 'This will delete all units created in this transfer and their descendants. Are you sure?'} %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  You haven't made any transfers. <%= link_to "Start one now.", [:new, :transfer] %>
+<% end %>
